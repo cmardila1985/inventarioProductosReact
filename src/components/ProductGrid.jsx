@@ -15,9 +15,9 @@ function ProductGrid() {
     stock: ''
   });
   const [combinaciones, setCombinaciones] = useState([]);
+  const [catFacts, setCatFacts] = useState([]);
 
-
-  const handleProductCreated = async (response) => {
+  const handleProductCreated = async(response) => {
     alert('Producto creado exitosamente');
     const result = await axios.get('http://localhost:8080/api/v1/productos/productos');
     setProductos(result.data);
@@ -26,9 +26,9 @@ function ProductGrid() {
   const obtenerCombinaciones = async (valor) => {
     const result = await axios.get(`http://localhost:8080/api/v1/productos/combinaciones/${valor}`);
     setCombinaciones(result.data);
-    if(result.data.length > 0){
+    if (result.data.length > 0) {
       alert(`Combinaciones encontradas: ${result.data.map(comb => comb.join(', ')).join('\n')}`);
-    }else{
+    } else {
       alert("No se encontraron combinaciones")
     }
   };
@@ -52,6 +52,13 @@ function ProductGrid() {
     };
 
     fetchData();
+
+    // Fetch cat facts
+    const fetchCatFacts = async () => {
+      const result = await axios.get('https://meowfacts.herokuapp.com/?lang=esp');
+      setCatFacts(result.data.data);
+    };
+    fetchCatFacts();
   }, []);
 
   const handleEditar = (producto) => {
@@ -91,6 +98,10 @@ function ProductGrid() {
     }));
   };
 
+  const handleShowCatFacts = () => {
+    alert(catFacts.join('\n'));
+  };
+
   return (
     <div>
       <ProductForm onProductCreated={handleProductCreated} />
@@ -105,6 +116,7 @@ function ProductGrid() {
           <input type="number" id="valorCompra" name="valorCompra" />
           <button onClick={() => obtenerCombinaciones(document.getElementById('valorCompra').value)}>Obtener Combinaciones</button>
         </div>
+        <button onClick={handleShowCatFacts}>Ver Datos de Gatos</button>
       </div>
 
       <table className="styled-table">

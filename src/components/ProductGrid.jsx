@@ -16,6 +16,7 @@ function ProductGrid() {
   });
   const [combinaciones, setCombinaciones] = useState([]);
   const [catFacts, setCatFacts] = useState([]);
+  const [uselessFact, setUselessFact] = useState('');
 
   const handleProductCreated = async(response) => {
     alert('Producto creado exitosamente');
@@ -59,6 +60,13 @@ function ProductGrid() {
       setCatFacts(result.data.data);
     };
     fetchCatFacts();
+
+    // Fetch useless fact
+    const fetchUselessFact = async () => {
+      const result = await axios.get('https://uselessfacts.jsph.pl/random.json?language=en');
+      setUselessFact(result.data.text);
+    };
+    fetchUselessFact();
   }, []);
 
   const handleEditar = (producto) => {
@@ -102,6 +110,10 @@ function ProductGrid() {
     alert(catFacts.join('\n'));
   };
 
+  const handleShowUselessFact = () => {
+    alert(uselessFact);
+  };
+
   return (
     <div>
       <ProductForm onProductCreated={handleProductCreated} />
@@ -117,6 +129,7 @@ function ProductGrid() {
           <button onClick={() => obtenerCombinaciones(document.getElementById('valorCompra').value)}>Obtener Combinaciones</button>
         </div>
         <button onClick={handleShowCatFacts}>Ver Datos de Gatos</button>
+        <button onClick={handleShowUselessFact}>Dato Inútil del Día</button>
       </div>
 
       <table className="styled-table">
@@ -159,6 +172,10 @@ function ProductGrid() {
           ))}
         </tbody>
       </table>
+
+      <div>
+        <p>Dato inútil del día: {uselessFact}</p>
+      </div>
     </div>
   );
 }
